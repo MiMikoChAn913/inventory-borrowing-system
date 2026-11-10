@@ -1,0 +1,63 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: inventory_db
+      POSTGRES_USER: inventory_user
+      POSTGRES_PASSWORD: local-development-only
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U inventory_user -d inventory_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    ports:
+      - "5432:5432"
+    volumes:
+      - inventory_pgdata:/var/lib/postgresql/data
+
+  migrate:
+    build:
+      context: .
+      target: runtime
+    command: ["node", "server/node_modules/prisma/build/index.js", "migrate", "deploy"]
+    environment:
+      DATABASE_URL: postgresql://inventory_user:local-development-only@postgres:5432/inventory_db?schema=public
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  seed:
+    build:
+      context: .
+      target: runtime
+    command: ["node", "server/prisma/seed.js"]
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://inventory_user:local-development-only@postgres:5432/inventory_db?schema=public
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: "no"
+
+  app:
+    build:
+      context: .
+      target: runtime
+    environment:
+      DATABASE_URL: postgresql://inventory_user:local-development-only@postgres:5432/inventory_db?schema=public
+      NODE_ENV: production
+      PORT: 3000
+      COOKIE_SECURE: "false"
+      SESSION_TTL_HOURS: 8
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      seed:
+        condition: service_completed_successfully
+    ports:
+      - "3000:3000"
+
+volumes:
+  inventory_pgdata:

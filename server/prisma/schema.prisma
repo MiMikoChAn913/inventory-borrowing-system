@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  BORROWER
+  CUSTODIAN
+}
+
+enum BorrowStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  RETURNED
+}
+
+model User {
+  id               String          @id @default(uuid())
+  email            String          @unique
+  displayName      String
+  passwordHash     String
+  role             Role
+  createdAt        DateTime        @default(now())
+  sessions         Session[]
+  borrowRequests   BorrowRequest[] @relation("BorrowerRequests")
+  reviewedRequests BorrowRequest[] @relation("ReviewerRequests")
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  tokenHash String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model Item {
+  id                String          @id @default(uuid())
+  name              String
+  description       String
+  totalQuantity     Int
+  availableQuantity Int
+  active            Boolean         @default(true)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  borrowRequests    BorrowRequest[]
+}
+
+model BorrowRequest {
+  id              String       @id @default(uuid())
+  borrowerId      String
+  itemId          String
+  quantity        Int
+  purpose         String
+  status          BorrowStatus @default(PENDING)
+  rejectionReason String?
+  reviewerId      String?
+  requestedAt     DateTime     @default(now())
+  reviewedAt      DateTime?
+  returnedAt      DateTime?
+  borrower        User         @relation("BorrowerRequests", fields: [borrowerId], references: [id], onDelete: Restrict)
+  reviewer        User?        @relation("ReviewerRequests", fields: [reviewerId], references: [id], onDelete: SetNull)
+  item            Item         @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  @@index([borrowerId])
+  @@index([itemId])
+  @@index([status])
+}

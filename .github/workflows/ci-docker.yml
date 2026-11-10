@@ -1,0 +1,71 @@
+name: CI & Docker Build
+
+on:
+  workflow_call:
+  pull_request:
+    branches: [staging, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-and-docker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: inventory
+          POSTGRES_PASSWORD: inventory-ci-only
+          POSTGRES_DB: inventory_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://inventory:inventory-ci-only@localhost:5432/inventory_test?schema=public
+      SEED_BORROWER_PASSWORD: ci-borrower-password
+      SEED_CUSTODIAN_PASSWORD: ci-custodian-password
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+
+      - name: Enable pnpm
+        run: corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client and deploy migrations
+        run: |
+          pnpm db:generate
+          pnpm db:deploy
+
+      - name: Run automated tests and production build
+        run: |
+          pnpm test
+          pnpm build
+
+      - name: Check deployment scripts
+        run: |
+          bash -n deploy/deploy.sh deploy/release.sh deploy/teardown.sh
+          python3 -m py_compile deploy/smoke_test.py
+
+      - name: Verify production Docker image builds
+        run: docker build -t inventory-borrowing:${{ github.sha }} .

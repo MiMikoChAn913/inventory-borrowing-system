@@ -1,0 +1,21 @@
+{
+  "name": "inventory-borrowing-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Inventory and borrowing system for CPE 334 Sprint 1 and Lab 5",
+  "scripts": {
+    "dev": "pnpm --parallel --filter server --filter client dev",
+    "build": "pnpm --filter client build && node scripts/copy-client.mjs && pnpm --filter server build",
+    "test": "pnpm --filter server test",
+    "test:unit": "pnpm --filter server test:unit",
+    "test:integration": "pnpm --filter server test:integration",
+    "db:generate": "pnpm --filter server db:generate",
+    "db:migrate": "pnpm --filter server db:migrate",
+    "db:deploy": "pnpm --filter server db:deploy",
+    "db:seed": "pnpm --filter server db:seed"
+  },
+  "packageManager": "pnpm@11.25.0",
+  "engines": {
+    "node": ">=22"
+  }
+}

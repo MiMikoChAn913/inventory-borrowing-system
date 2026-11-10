@@ -1,0 +1,16 @@
+node_modules/
+.pnpm-store/
+.env
+.env.*
+!.env.example
+client/dist/
+server/public/
+server/coverage/
+coverage/
+*.log
+*.pyc
+__pycache__/
+.DS_Store
+.idea/
+.vscode/
+tmp/
