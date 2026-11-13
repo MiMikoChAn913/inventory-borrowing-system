@@ -19,7 +19,7 @@ services:
     build:
       context: .
       target: runtime
-    command: ["node", "server/node_modules/prisma/build/index.js", "migrate", "deploy"]
+    command: ["node", "server/node_modules/prisma/build/index.js", "migrate", "deploy", "--schema", "server/prisma/schema.prisma"]
     environment:
       DATABASE_URL: postgresql://inventory_user:local-development-only@postgres:5432/inventory_db?schema=public
     depends_on:

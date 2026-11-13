@@ -63,7 +63,7 @@ done
 IMAGE="$REGION-docker.pkg.dev/$PROJECT_ID/$REGISTRY_NAME/$SERVICE_NAME:$IMAGE_TAG"
 run gcloud builds submit --tag "$IMAGE" .
 
-run gcloud run jobs create "$MIGRATE_JOB_NAME" --image="$IMAGE" --region="$REGION" --service-account="$RUNTIME_EMAIL" --add-cloudsql-instances="$CONNECTION_NAME" --set-secrets=DATABASE_URL=inventory-database-url:latest,SEED_BORROWER_PASSWORD=inventory-borrower-password:latest,SEED_CUSTODIAN_PASSWORD=inventory-custodian-password:latest --set-env-vars=SEED_BORROWER_EMAIL=borrower@example.test,SEED_CUSTODIAN_EMAIL=custodian@example.test --command=sh --args=-c,"node server/node_modules/prisma/build/index.js migrate deploy && node server/prisma/seed.js"
+run gcloud run jobs create "$MIGRATE_JOB_NAME" --image="$IMAGE" --region="$REGION" --service-account="$RUNTIME_EMAIL" --add-cloudsql-instances="$CONNECTION_NAME" --set-secrets=DATABASE_URL=inventory-database-url:latest,SEED_BORROWER_PASSWORD=inventory-borrower-password:latest,SEED_CUSTODIAN_PASSWORD=inventory-custodian-password:latest --set-env-vars=SEED_BORROWER_EMAIL=borrower@example.test,SEED_CUSTODIAN_EMAIL=custodian@example.test --command=sh --args=-c,"node server/node_modules/prisma/build/index.js migrate deploy --schema server/prisma/schema.prisma && node server/prisma/seed.js"
 run gcloud run jobs execute "$MIGRATE_JOB_NAME" --region="$REGION" --wait
 run gcloud run deploy "$SERVICE_NAME" --image="$IMAGE" --region="$REGION" --service-account="$RUNTIME_EMAIL" --add-cloudsql-instances="$CONNECTION_NAME" --set-secrets=DATABASE_URL=inventory-database-url:latest --set-env-vars=NODE_ENV=production,COOKIE_SECURE=true --allow-unauthenticated --min=0 --max=3 --port=3000
 
