@@ -6,7 +6,7 @@ Use this file to collect evidence while working. The submitted PDF must use head
 
 - Team: พวกพี่ชอบบิด
 - Students, IDs and GitHub usernames: `<TEAM VALUES>`
-- Public repository: `<URL>`
+- Public repository: <https://github.com/MiMikoChAn913/inventory-borrowing-system>
 - Submitted tag/full commit: `<SHA>`
 - Public service: `<URL>`
 - Running commit/revision: `<SHA / CLOUD RUN REVISION>`
