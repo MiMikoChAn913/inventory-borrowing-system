@@ -45,3 +45,10 @@ Use this file to collect evidence while working. The submitted PDF must use head
 - CI and deployment run: `<LINKS>`
 - Running revision matching commit: `<EVIDENCE>`
 - Release procedure: `deployment.md`
+
+## Local pre-deployment verification
+
+- Verified on 13 November 2026: borrower submitted a request, custodian approved it, and borrower returned the item.
+- The application container was restarted; the health endpoint returned HTTP 200 and the request remained `RETURNED` in PostgreSQL.
+- [Borrower returned-item screenshot](../../evidence/local/borrower-returned.png)
+- This local check supports development only; replace or supplement it with the required public GCP evidence before submission.
