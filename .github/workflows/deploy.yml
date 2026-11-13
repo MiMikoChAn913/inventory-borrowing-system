@@ -20,13 +20,14 @@ concurrency:
 
 jobs:
   test:
-    if: github.ref == 'refs/heads/main' && !inputs.image_tag
+    if: vars.DEPLOY_ENABLED == 'true' && github.ref == 'refs/heads/main' && !inputs.image_tag
     uses: ./.github/workflows/ci-docker.yml
 
   deploy:
     needs: test
     if: >-
-      always() && !cancelled() && github.ref == 'refs/heads/main' &&
+      vars.DEPLOY_ENABLED == 'true' && always() && !cancelled() &&
+      github.ref == 'refs/heads/main' &&
       (needs.test.result == 'success' ||
        (github.event_name == 'workflow_dispatch' && inputs.image_tag != '' && needs.test.result == 'skipped'))
     runs-on: ubuntu-latest

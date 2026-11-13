@@ -1,5 +1,9 @@
 # Lab 5 Deployment Record
 
+The GitHub deployment workflow remains safely disabled until the repository variable
+`DEPLOY_ENABLED` is set to `true`. Enable it only after all GCP variables, Workload
+Identity Federation, secrets and the `demo` environment are configured.
+
 Complete every `<TEAM VALUE>` field with the team's real value and retain direct evidence links. Never paste a secret into this document.
 
 ## Stack and resource names
