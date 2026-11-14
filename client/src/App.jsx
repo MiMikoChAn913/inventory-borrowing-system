@@ -304,7 +304,10 @@ function Dashboard({ user, onLogout, setNotice }) {
           </div>
         </section>
       </main>
-      <footer><span>BorrowBox · Inventory & Borrowing System</span><span>CPE 334 · 2026</span></footer>
+      <footer>
+        <span>BorrowBox · Inventory & Borrowing System</span>
+        <span className="release-badge">CPE 334 · Lab 5 · CI/CD release</span>
+      </footer>
 
       <BorrowDialog
         item={borrowItem}

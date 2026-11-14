@@ -121,6 +121,7 @@ textarea { resize: vertical; }
 .add-item { display: grid; grid-template-columns: 1.1fr 1fr 1.3fr .55fr auto; align-items: end; gap: 12px; margin: 40px 0; padding: 22px; border-radius: 17px; background: #e9f3ef; border: 1px solid #d2e5dd; }
 .add-item input { background: rgba(255,255,255,.85); }
 footer { width: min(1180px, calc(100% - 48px)); margin: 0 auto; display: flex; justify-content: space-between; padding: 28px 0; border-top: 1px solid var(--line); color: #8a938f; font-size: 11px; }
+.release-badge { padding: 6px 10px; border-radius: 999px; background: var(--mint); color: #0a654d; font-weight: 900; letter-spacing: .02em; }
 
 .modal-backdrop { position: fixed; z-index: 50; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(13,30,25,.62); backdrop-filter: blur(5px); }
 .modal { position: relative; width: min(500px, 100%); padding: 30px; border-radius: 19px; background: white; box-shadow: 0 30px 90px rgba(0,0,0,.28); }
