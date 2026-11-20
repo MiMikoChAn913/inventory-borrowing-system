@@ -1,10 +1,9 @@
 # Lab 5 Deployment Record
 
-The GitHub deployment workflow remains safely disabled until the repository variable
-`DEPLOY_ENABLED` is set to `true`. Enable it only after all GCP variables, Workload
-Identity Federation, secrets and the `demo` environment are configured.
-
-Complete every `<TEAM VALUE>` field with the team's real value and retain direct evidence links. Never paste a secret into this document.
+The GitHub deployment workflow is enabled after the GCP variables, Workload Identity
+Federation, secrets and the protected `demo` environment were configured. The normal
+release path is a reviewed merge to `main`; GitHub Actions authenticates to GCP without
+a service-account JSON key. Never paste a secret into this document.
 
 ## Stack and resource names
 
@@ -17,9 +16,9 @@ Complete every `<TEAM VALUE>` field with the team's real value and retain direct
 | Migration/seed | Cloud Run job `inventory-migrate` |
 | Persistent database | Cloud SQL instance `inventory-pg`, database `inventory_db` |
 | Secret storage | Secret Manager |
-| GCP project | `<TEAM VALUE>` |
-| Region | `asia-southeast1` unless the team documents a change |
-| Public URL | `<TEAM VALUE>` |
+| GCP project | `inventory-borrow-cpe334` |
+| Region | `asia-southeast1` |
+| Public URL | <https://inventory-borrowing-4bhkmkbela-as.a.run.app> |
 
 ## Environment variables
 
@@ -68,8 +67,8 @@ bash deploy/deploy.sh
 - Required check name: `test-and-docker`
 - PR targets covered: `staging`, `main`
 - Main ruleset: require PR, required check, up-to-date branch, empty bypass list.
-- Failing temporary PR evidence: `<PR LINK AND COMMIT>`
-- Passing PR evidence: `<PR LINK AND ACTIONS RUN>`
+- Failing temporary PR evidence: [PR #12](https://github.com/MiMikoChAn913/inventory-borrowing-system/pull/12), commit `55c309bed4930ebe42f5264b1acb3082cdc048d8`; the required [`test-and-docker` job failed](https://github.com/MiMikoChAn913/inventory-borrowing-system/actions/runs/43618860017/job/132519782745).
+- Passing PR evidence: [PR #14](https://github.com/MiMikoChAn913/inventory-borrowing-system/pull/14) and its [passing CI run](https://github.com/MiMikoChAn913/inventory-borrowing-system/actions/runs/43619663615).
 
 ## GitHub-to-GCP deployment
 
@@ -79,21 +78,22 @@ Every normal merge into `main` builds an image tagged with the full commit SHA, 
 
 ## Running commit
 
-- Release commit SHA: `<TEAM VALUE>`
+- Release commit SHA: `d54664d847e7ccd5b1419d1e86870c6bf6c09a0d`
 - Image tag: same full SHA
-- Image digest: `<TEAM VALUE>`
-- Cloud Run revision: `<TEAM VALUE>`
-- Workflow run: `<DIRECT LINK>`
+- Image digest: `sha256:38bb2834f337ba2b174395709fa89f4fa1a77b6c67af927f67250f86986c4db2`
+- Cloud Run revision: `inventory-borrowing-00004-smh`
+- Workflow run: [automatic deployment run 44794423519](https://github.com/MiMikoChAn913/inventory-borrowing-system/actions/runs/44794423519)
+- Verification: WIF authentication, image build/push, migration, Cloud Run update and the public smoke test all passed. The smoke test verified login, authenticated inventory access, health, readiness/database connectivity and HTML.
 
 ## Persistence check
 
 | Step | Evidence |
 |---|---|
-| Create request and approve it | `<URL/SCREENSHOT, ROLE, COMMIT>` |
-| Restart Cloud Run revision | `<CONSOLE/COMMAND EVIDENCE>` |
-| Retrieve the same request | `<URL/SCREENSHOT>` |
-| Deploy a reviewed visible change | `<PR + RUN + NEW REVISION>` |
-| Retrieve the same request again | `<URL/SCREENSHOT>` |
+| Create request and approve it | **Pending public capture:** Borrower creates a request and Custodian approves it on the public URL. Record the request ID and release SHA. |
+| Restart Cloud Run revision | **Pending public capture:** restart/redeploy from Cloud Run and capture the new instance/revision evidence without exposing secrets. |
+| Retrieve the same request | **Pending public capture:** show the same request ID and state after restart. |
+| Deploy a reviewed visible change | [Issue #13](https://github.com/MiMikoChAn913/inventory-borrowing-system/issues/13) -> [PR #14 into `staging`](https://github.com/MiMikoChAn913/inventory-borrowing-system/pull/14) -> [PR #15 into `main`](https://github.com/MiMikoChAn913/inventory-borrowing-system/pull/15) -> [deploy run](https://github.com/MiMikoChAn913/inventory-borrowing-system/actions/runs/44794423519), revision `inventory-borrowing-00004-smh`. |
+| Retrieve the same request again | **Pending public capture:** show the same request ID after the reviewed redeploy. |
 
 ## Release procedure
 
