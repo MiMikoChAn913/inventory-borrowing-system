@@ -1,7 +1,7 @@
 # Lab 6 Part A - Sprint 1 UAT Handoff
 
 Product Team: พวกพี่ชอบบิด (Team 2) - Theme 2, Inventory and Borrowing System
-UAT Team: `<PARTNER TEAM NAME, STUDENTS, IDS>`
+UAT Team: ยอดนักบิด (sec131) - Pimchaya Suprateravanit (`pimchayasupr-hash`), Suphattra Kongsiriphat (`supa-gif173`); student IDs `<TO CONFIRM>`
 
 This handoff lets the UAT Team execute every case without verbal explanation. All data is
 synthetic. Credentials are sent privately through the course handoff and never appear here.

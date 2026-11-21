@@ -14,7 +14,7 @@ Every `<…>` placeholder must be replaced with real, verified evidence or left 
 | Repository | <https://github.com/MiMikoChAn913/inventory-borrowing-system> |
 | Tested Sprint 1 baseline | commit `d54664d847e7ccd5b1419d1e86870c6bf6c09a0d`, revision `inventory-borrowing-00004-smh` |
 | Deployed URL | <https://inventory-borrowing-4bhkmkbela-as.a.run.app> |
-| Partner team (UAT Team for our app / Product Team we test) | `<TEAM NAME, STUDENTS, IDS, REPO, URL>` |
+| Partner team (UAT Team for our app / Product Team we test) | ยอดนักบิด (sec131): Pimchaya Suprateravanit (`pimchayasupr-hash`), Suphattra Kongsiriphat (`supa-gif173`), IDs `<TO CONFIRM>`; Event Registration app, <https://github.com/pimchayasupr-hash/cpe334-event-registration>, URL `<PENDING THEIR DEPLOY>` |
 | Final Sprint 1 UAT decision on our app | `<Accepted / Accepted with minor limitations / Not Accepted>` by `<PARTNER TESTER NAMES>`, `<DATE>`, revision `<REV>` |
 
 ## Contents
