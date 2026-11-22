@@ -25,6 +25,7 @@ REPO = "https://github.com/MiMikoChAn913/inventory-borrowing-system"
 SHA = "d54664d847e7ccd5b1419d1e86870c6bf6c09a0d"
 DIGEST = "sha256:38bb2834f337ba2b174395709fa89f4fa1a77b6c67af927f67250f86986c4db2"
 URL = "https://inventory-borrowing-4bhkmkbela-as.a.run.app"
+BOARD = "https://github.com/users/MiMikoChAn913/projects/4"
 WIDTH = 178 * mm
 INK = colors.HexColor("#17324d")
 GREEN = colors.HexColor("#0a654d")
@@ -151,11 +152,11 @@ story = [
         ["3 / C-04, C-05", link("Live app", URL) + " / " +
          link("first replacement", "/actions/runs/44930813963") + " / " +
          link("second replacement", "/actions/runs/45003403668"),
-         "Borrower request, Custodian approval and login rejection captured. Same record survived first replacement; final capture after second replacement is outstanding."],
+         "Borrower request, Custodian approval and login rejection captured. The same approved record survived both application replacements (Figures 7-9)."],
         ["4 / C-06", link("Issue #13", "/issues/13") + " -> " +
          link("PR #14", "/pull/14") + " -> " + link("PR #15", "/pull/15") + " -> " +
          link("automatic deploy", "/actions/runs/44794423519"),
-         "Reviewed visible release badge reached main and deployed automatically. SHA and digest identify the image."],
+         "Reviewed visible release badge reached main and deployed automatically. SHA and digest identify the image. Retrospective team board: Figure 10."],
     ], [25, 65, 88]),
     p("Contributions", H2),
     table([
@@ -238,21 +239,17 @@ story = [
     PageBreak(),
     p("Answer Part 3: GCP Deployment and Persistence", H1),
     p("C-05 / R-04 - record before and after replacement", H2),
-    p("The unique purpose label LAB5-PERSIST-20261121 identifies the same UI record; the UI does not expose its internal request ID. Both captures show Arduino kit, quantity 1, Demo Borrower, the same request timestamp and approved status. Inventory remained 9/10 after approval."),
+    p("The unique purpose label LAB5-PERSIST-20261121 identifies the same UI record; the UI does not expose its internal request ID. All three captures show Arduino kit, quantity 1, Demo Borrower, the same request timestamp and approved status. Inventory remained 9/10 after approval."),
     app_figure("c04-custodian-approved.png", (24, 596, 590, 704),
                "Figure 7. C-04/C-05 (R-03/R-04): Custodian approved the request before application replacement, on release d54664d847e7, revision inventory-borrowing-00004-smh."),
     app_figure("c05-after-redeploy-persisted.png", (24, 596, 590, 704),
                "Figure 8. C-05 (R-04): same approved record after run 44930813963 created revision inventory-borrowing-00005-wlk. The browser was refreshed after deployment; release image was unchanged."),
-    p("Replacement operations and current evidence boundary", H2),
-    table([
-        ["Checkpoint", "Result"],
-        [link("Run 44930813963", "/actions/runs/44930813963"),
-         "Same-image redeploy from 00004-smh to fresh revision 00005-wlk; smoke tests passed and Figure 8 confirms record persistence."],
-        [link("Run 45003403668", "/actions/runs/45003403668"),
-         "Second same-image redeploy created 00006-t9c; WIF, deployment and smoke tests passed on 22 Nov 2026. Record-specific UI capture is outstanding."],
-    ], [46, 132]),
-    Spacer(1, 7),
-    note("<b>Outstanding C-05 capture:</b> refresh the public app on current revision 00006-t9c and capture the same approved request. Browser control stopped before this capture because it could not verify the current URL. The smoke test does not query this individual request. These runs exercise replacement with fresh Cloud Run revisions; no separate restart-only command was run."),
+    app_figure("c05-after-second-redeploy-persisted.png", (24, 636, 590, 744),
+               "Figure 9. C-05 (R-04): after run 45003403668 created revision inventory-borrowing-00006-t9c, a fresh Custodian login on 22 Nov 2026 still shows the same approved request and timestamp; Arduino stock remains 9/10 in the original capture."),
+    p("Operation record: " + link("run 44930813963", "/actions/runs/44930813963") +
+      " replaced 00004-smh with fresh revision 00005-wlk; " +
+      link("run 45003403668", "/actions/runs/45003403668") +
+      " replaced it with 00006-t9c. Both use the same immutable image and passed WIF, deployment and smoke checks. Application replacement was exercised through fresh Cloud Run revisions; no independent restart-only command was run.", SMALL),
     PageBreak(),
     p("Answer Part 4: Repeatable Release Pipeline", H1),
     p("C-06 / R-07 to R-10 - reviewed visible release", H2),
@@ -280,9 +277,23 @@ story = [
       "3. Open the release PR from staging into main; obtain review and the required passing check, then merge.<br/>"
       "4. deploy.yml builds the full-SHA image, resolves its digest, runs migrations, updates Cloud Run and smoke-tests the public URL.<br/>"
       "5. Record SHA, digest, revision and run link in deployment.md. For a same-image redeploy/rollback, dispatch the workflow with an existing full image SHA; this path skips build and migration."),
-    p("Documentation and remaining verification", H2),
-    p(link("PR #16", "/pull/16") + " containing the earlier deployment record was merged into staging. Current local evidence-index.md and deployment.md include the two persistence runs and the outstanding final UI capture. A project-board link (R-09) was not verified: the available GitHub token lacks read:project scope; no claim of verified board usage is made here.", SMALL),
-    p("Snapshot prepared 22 November 2026 (Asia/Bangkok). Evidence is limited to the linked runs and saved captures; no final record state after the second redeploy is asserted.", SMALL),
+    p("Documentation and board traceability", H2),
+    p(link("PR #16", "/pull/16") + " containing the earlier deployment record was merged into staging. " +
+      link("PR #19", "/pull/19") + " adds the captured evidence, updated deployment record and this PDF. The " +
+      link("team delivery board", BOARD) + " and its creation-date limitation are documented on the next page.", SMALL),
+    p("Snapshot prepared 22 November 2026 (Asia/Bangkok). The public application, release identity and record persistence are supported by the linked runs and saved captures.", SMALL),
+    PageBreak(),
+    p("Answer Part 4: Repeatable Release Pipeline", H1),
+    p("R-09 - team project board", H2),
+    p(link("BorrowBox - Team TH-039 Delivery Board", BOARD) +
+      " is linked to the inventory-borrowing-system repository. Six existing lab5-labelled items were imported: Issue #13 and PRs #12, #14, #15, #16 and #19. The five closed/merged items are Done; evidence PR #19 is In Progress."),
+    p("Provenance and access: this board was created on 22 November 2026 to organize the verified history and ongoing work. Earlier release work predates the board; this is not evidence of board use during those earlier releases. The board is currently Private, so its captured contents are supplied below for readers without project access.", SMALL),
+    crop("c06-team-project-board.png", (125, 43, 810, 82)),
+    Spacer(1, 4),
+    crop("c06-team-project-board.png", (10, 170, 620, 199)),
+    Spacer(1, 4),
+    crop("c06-team-project-board.png", (280, 278, 813, 720)),
+    p("Figure 10. R-09 / C-06 supporting traceability: project #4 on 22 Nov 2026, showing PR #19 In Progress and five completed history cards. Cropped URL, title and status-column regions come from the same capture. Board creation was retrospective; the PR/Issue timestamps remain the authoritative release history.", SMALL),
 ]
 
 OUT.parent.mkdir(parents=True, exist_ok=True)
