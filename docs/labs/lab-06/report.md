@@ -12,9 +12,9 @@ Every `<…>` placeholder must be replaced with real, verified evidence or left 
 | Theme / context | Theme 2 - Inventory and Borrowing System (Borrower, Custodian) |
 | Sprint 1 scope | F-01..F-06 (FR-01..07, BR-01..07); see [uat-handoff.md](uat-handoff.md) §2 |
 | Repository | <https://github.com/MiMikoChAn913/inventory-borrowing-system> |
-| Tested Sprint 1 baseline | commit `d54664d847e7ccd5b1419d1e86870c6bf6c09a0d`, revision `inventory-borrowing-00004-smh` |
+| Tested Sprint 1 baseline | commit `d54664d847e7ccd5b1419d1e86870c6bf6c09a0d`, revision `inventory-borrowing-00006-t9c` (image `c4a9f67`, same as 00004-smh) |
 | Deployed URL | <https://inventory-borrowing-4bhkmkbela-as.a.run.app> |
-| Partner team (UAT Team for our app / Product Team we test) | ยอดนักบิด (sec131): Pimchaya Suprateravanit (`pimchayasupr-hash`), Suphattra Kongsiriphat (`supa-gif173`), IDs `<TO CONFIRM>`; Event Registration app, <https://github.com/pimchayasupr-hash/cpe334-event-registration>, URL `<PENDING THEIR DEPLOY>` |
+| Partner team (UAT Team for our app / Product Team we test) | ยอดนักบิด (sec131): Pimchaya Suprateravanit (`pimchayasupr-hash`), Suphattra Kongsiriphat (`supa-gif173`), IDs `<TO CONFIRM>`; Event Registration app, <https://github.com/pimchayasupr-hash/cpe334-event-registration>, URL <https://sdb3eb069-4d7hbszvwq-as.a.run.app> (commit `e6aad26`, revision `sdb3eb069-00002-mct`, per their UAT plan PR #33) |
 | Final Sprint 1 UAT decision on our app | `<Accepted / Accepted with minor limitations / Not Accepted>` by `<PARTNER TESTER NAMES>`, `<DATE>`, revision `<REV>` |
 
 ## Contents
@@ -31,7 +31,7 @@ Every `<…>` placeholder must be replaced with real, verified evidence or left 
 
 | Stage | Commit | Revision | Notes |
 |---|---|---|---|
-| Sprint 1 baseline handed to UAT Team | `d54664d` | `inventory-borrowing-00004-smh` | Lab 5 release |
+| Sprint 1 baseline handed to UAT Team | `d54664d` | `inventory-borrowing-00006-t9c` (image `c4a9f67`) | Lab 5 release |
 | Docs-only releases after handoff (if any) | `<SHA>` | `<REV>` | Same application code; partner informed `<DATE>` |
 | Defective commit(s) | `<SHA or "none found">` | | |
 | RED test commit | `<SHA>` | | |

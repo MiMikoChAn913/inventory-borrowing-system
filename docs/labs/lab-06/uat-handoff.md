@@ -12,7 +12,8 @@ synthetic. Credentials are sent privately through the course handoff and never a
 |---|---|
 | Repository | <https://github.com/MiMikoChAn913/inventory-borrowing-system> |
 | Sprint 1 application commit | `d54664d847e7ccd5b1419d1e86870c6bf6c09a0d` (`main`) |
-| Deployed Cloud Run revision | `inventory-borrowing-00004-smh` |
+| Deployed Cloud Run revision | `inventory-borrowing-00006-t9c` (2026-11-22; 00004-smh and 00005-wlk ran the same image) |
+| Container image digest | `sha256:c4a9f67f05db06a519415294f68e157dbac162797d7b890dc1ead083776dbd51` |
 | URL | <https://inventory-borrowing-4bhkmkbela-as.a.run.app> |
 | Contract | `docs/sprints/sprint-1/inventory-borrowing.md` (Sprint 1 Engineering Contract v1.0) |
 
@@ -36,7 +37,7 @@ confirmation (Sprint 2), search/reporting and audit export (Sprint 3), item dele
 |---|---|---|---|
 | ACC-B1 | Borrower | Demo Borrower | Sent privately |
 | ACC-C1 | Custodian | Demo Custodian | Sent privately |
-| ACC-B2 | Borrower | Demo Borrower 2 | Needed only for UAT-06 (ownership); created as a one-off data setup, no code change. Sent privately |
+| ACC-B2 | Borrower | Demo Borrower 2 | Needed only for UAT-06 (ownership). Not created by the seed; the Product Team provisions it with the data-setup step below. Sent privately |
 
 ## 4. Data setup, independence and cleanup
 
@@ -44,6 +45,14 @@ confirmation (Sprint 2), search/reporting and audit export (Sprint 3), item dele
   steps, so **record the "available" value immediately before each action** and check the change,
   not an absolute number.
 - Seeded items: Notebook computer (5), Projector (2), Arduino kit (10).
+- **ACC-B2 data setup (Product Team, once, before handoff):** run `bash deploy/create-uat-borrower.sh`.
+  It stores a random password in Secret Manager (`inventory-borrower2-password`) and runs a one-off
+  Cloud Run job (`inventory-uat-setup`) on the already-deployed image to upsert
+  `borrower2@example.test` / "Demo Borrower 2". It is idempotent, changes no application code, and
+  creates no new service revision. The Product Team reads the password with
+  `gcloud secrets versions access latest --secret inventory-borrower2-password` and sends it privately.
+  **If the UAT Team has not received ACC-B2, record UAT-06 as BLOCKED (reason: ACC-B2 not provisioned)
+  and run UAT-01..05 normally.**
 - Run cases in order UAT-01 → UAT-06. UAT-04 depends on records created in UAT-01 and UAT-02.
   The other cases are independent.
 - Prefix every purpose text and new item name with `UAT-<your team>-` so records are identifiable.
@@ -55,13 +64,22 @@ confirmation (Sprint 2), search/reporting and audit export (Sprint 3), item dele
 | Thai label | Meaning |
 |---|---|
 | เข้าสู่ระบบ / ออกจากระบบ | Log in / Log out |
-| ยืม (button on item card) | Borrow |
+| ขอยืม (button on item card) | Request to borrow |
 | จำนวน / วัตถุประสงค์ / ส่งคำขอ | Quantity / Purpose / Submit request |
 | อนุมัติ / ปฏิเสธ | Approve / Reject |
 | แจ้งคืนอุปกรณ์ | Report return |
 | เพิ่มอุปกรณ์ | Add item |
 | ↻ อัปเดตข้อมูล | Refresh |
 | มีให้ยืม X จากทั้งหมด Y ชิ้น | X available of Y total |
+
+Request status labels: the cases below name the server status (English enum); the UI shows the Thai label.
+
+| UI shows | Status in cases / API |
+|---|---|
+| รอตรวจสอบ | PENDING |
+| อนุมัติแล้ว | APPROVED |
+| ไม่อนุมัติ | REJECTED |
+| คืนแล้ว | RETURNED |
 
 ## 6. Browser console snippets (for direct API checks)
 
@@ -93,7 +111,7 @@ const call = async (method, path, body) => {
 | # | Action | Expected result |
 |---|---|---|
 | 1 | Log in as ACC-B1. | Dashboard greets "Demo Borrower"; item list shows each item's available/total. |
-| 2 | Note Arduino kit available = **A**. Click ยืม on Arduino kit, enter the inputs, click ส่งคำขอ. | Success message; new request appears in "คำขอของฉัน" with status PENDING, quantity 1. Available is still **A** (stock is not taken at request time). |
+| 2 | Note Arduino kit available = **A**. Click ขอยืม on Arduino kit, enter the inputs, click ส่งคำขอ. | Success message; new request appears in "คำขอของฉัน" with status PENDING, quantity 1. Available is still **A** (stock is not taken at request time). |
 | 3 | Log out; log in as ACC-C1. | Request list shows all requests, including the new one as PENDING with borrower "Demo Borrower". |
 | 4 | Click อนุมัติ on the new request. | Status becomes APPROVED; Arduino kit available becomes **A − 1**. |
 | 5 | Log out; log in as ACC-B1. | Request shows APPROVED; button แจ้งคืนอุปกรณ์ is visible. |
@@ -161,7 +179,7 @@ const call = async (method, path, body) => {
 
 - **References:** BR-05; AC-BR-05, AC-BR-06
 - **Purpose:** verify a Borrower cannot see or return another Borrower's request.
-- **Roles:** ACC-B1, ACC-B2, ACC-C1.
+- **Roles:** ACC-B1, ACC-B2, ACC-C1. **Preconditions:** ACC-B2 provisioned (section 4); otherwise record BLOCKED.
 
 | # | Action | Expected result |
 |---|---|---|
