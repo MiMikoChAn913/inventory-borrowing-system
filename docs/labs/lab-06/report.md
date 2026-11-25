@@ -59,7 +59,19 @@ Category coverage:
 
 ## Part B - Independent execution (we are the UAT Team for `<PARTNER>`)
 
-Partner release under test: `<REPO, COMMIT/TAG, REVISION, URL>`; handoff received `<DATE>`.
+Partner release under test: <https://github.com/pimchayasupr-hash/cpe334-event-registration>, commit `e6aad26` (main, PR #40, Deploy demo run 45018492877, 2026-11-22), revision `sdb3eb069-00002-mct`, <https://sdb3eb069-4d7hbszvwq-as.a.run.app>. Handoff: their draft PR #33 `docs/labs/lab06/uat-plan.md` (UAT-01..06); credentials for ORG-A / PART-1 `<RECEIVED DATE>`.
+
+**Automated pre-check (not the graded execution)** - 2026-11-25 16:56 ICT, `curl` against the URL above, no login. A student must re-run these in the browser and capture the screenshots for B-evidence.
+
+| Partner case / step | Call | Expected (their plan) | Observed |
+|---|---|---|---|
+| UAT-06 step 1 | `GET /api/health` | 200 `{"status":"ok"}` | 200 `{"status":"ok"}` |
+| UAT-06 step 2 | `GET /api/ready` | 200, `database: connected` | 200 `{"status":"ready","database":"connected","db":"connected"}` |
+| UAT-04 step 1 | `GET /api/events` (no cookie) | 401, no data | 401 `{"error":"Authentication required"}` |
+| UAT-04 step 1 | `GET /api/events/<id>/registrations` (no cookie, placeholder id) | 401, no data | 401 `{"error":"Authentication required"}`; re-run with a real ORG-A event id |
+| extra | `POST /api/events`, `GET /api/auth/me`, `GET /api/registrations/me` (no cookie) | 401 | all 401 `{"error":"Authentication required"}` |
+
+UAT-01..05 need the ORG-A and PART-1 credentials; ORG-B and PART-2 are optional in their plan (cross-organizer step N/A and UAT-02 step 4 adapted if not provided).
 
 | Case ID | Tester | Date/time (ICT) | Version | Inputs used | Actual result (own words) | Result | Evidence |
 |---|---|---|---|---|---|---|---|
