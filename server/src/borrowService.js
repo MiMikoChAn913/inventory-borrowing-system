@@ -88,8 +88,9 @@ export const createBorrowService = (db) => ({
     return db.$transaction(async (tx) => {
       const request = await tx.borrowRequest.findUnique({ where: { id: requestId } });
       if (!request) throw notFound("Borrow request not found.");
-      assertApproved(request.status);
+      // Ownership first (BR-05): a non-owner must not learn the request's state (#20).
       assertBorrowerOwnsRequest(request.borrowerId, user.id);
+      assertApproved(request.status);
 
       await tx.item.update({
         where: { id: request.itemId },

@@ -128,6 +128,11 @@ test("AC-BR-01/04/05: request, approval and return persist through the API and d
   const afterReturn = await db.item.findUnique({ where: { id: item.id } });
   assert.equal(persisted.status, "RETURNED");
   assert.equal(afterReturn.availableQuantity, 2);
+
+  // Issue #20 (UAT-06, BR-05): non-owner gets 403, not 409, for a returned request.
+  const strangerAfterReturn = await otherBorrower.post(`/api/borrow-requests/${requestId}/return`);
+  assert.equal(strangerAfterReturn.status, 403);
+  assert.equal(strangerAfterReturn.body.error.code, "FORBIDDEN");
 });
 
 test("AC-BR-03: approval rejects unavailable quantity without changing stock", async () => {
