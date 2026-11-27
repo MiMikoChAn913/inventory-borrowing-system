@@ -57,36 +57,28 @@ Category coverage:
 | Forbidden role / ownership | UAT-03, UAT-06 |
 | State / history / persistence | UAT-04 |
 
-## Part B - Independent execution (we are the UAT Team for `<PARTNER>`)
+## Part B - Independent execution (we are the UAT Team for ยอดนักบิด, sec131)
 
-Partner release under test: <https://github.com/pimchayasupr-hash/cpe334-event-registration>, commit `e6aad26` (main, PR #40, Deploy demo run 45018492877, 2026-11-22), revision `sdb3eb069-00002-mct`, <https://sdb3eb069-4d7hbszvwq-as.a.run.app>. Handoff: their draft PR #33 `docs/labs/lab06/uat-plan.md` (UAT-01..06); credentials for ORG-A / PART-1 `<RECEIVED DATE>`.
+Partner release under test: <https://github.com/pimchayasupr-hash/cpe334-event-registration>, commit `e6aad26` (main, PR #40, Deploy demo run 45018492877, 2026-11-22), revision `sdb3eb069-00002-mct`, <https://sdb3eb069-4d7hbszvwq-as.a.run.app>. Handoff: their UAT plan `docs/labs/lab06/uat-plan.md` on branch `lab6/28-uat-plan` (UAT-01..06), plus ORG-A / PART-1 credentials received privately in chat. The passwords are **not** recorded here.
 
-**Automated pre-check (not the graded execution)** - 2026-11-25 16:56 ICT, `curl` against the URL above, no login. A student must re-run these in the browser and capture the screenshots for B-evidence.
+**How it was executed.** Ploychanok Imsuwan states that the instructor allowed the AI assistant to perform Part B for our team. Under that permission, Claude (AI assistant) ran every step of the partner's plan on 2026-11-27, 22:08:58-22:09:03 ICT. It used the deployed API with a script, `evidence/partner-uat.mjs`, that keeps the session cookie for each account the way the browser does. Every request and its full response is kept in `evidence/B-partner-uat-run-20261127.log` (passwords redacted). The run used the API, not the browser UI, so it covers the server behaviour each case asserts, not the look of the screens. Run tag `T2-20261127T1508`, which appears in every synthetic event title.
 
-| Partner case / step | Call | Expected (their plan) | Observed |
-|---|---|---|---|
-| UAT-06 step 1 | `GET /api/health` | 200 `{"status":"ok"}` | 200 `{"status":"ok"}` |
-| UAT-06 step 2 | `GET /api/ready` | 200, `database: connected` | 200 `{"status":"ready","database":"connected","db":"connected"}` |
-| UAT-04 step 1 | `GET /api/events` (no cookie) | 401, no data | 401 `{"error":"Authentication required"}` |
-| UAT-04 step 1 | `GET /api/events/<id>/registrations` (no cookie, placeholder id) | 401, no data | 401 `{"error":"Authentication required"}`; re-run with a real ORG-A event id |
-| extra | `POST /api/events`, `GET /api/auth/me`, `GET /api/registrations/me` (no cookie) | 401 | all 401 `{"error":"Authentication required"}` |
+Earlier unauthenticated pre-check, 2026-11-25 16:56 ICT (`curl`): health 200, ready 200 `database: connected`, and `GET /api/events`, `POST /api/events`, `GET /api/auth/me`, `GET /api/registrations/me` without a cookie all return 401.
 
-UAT-01..05 need the ORG-A and PART-1 credentials; ORG-B and PART-2 are optional in their plan (cross-organizer step N/A and UAT-02 step 4 adapted if not provided).
-
-| Case ID | Tester | Date/time (ICT) | Version | Inputs used | Actual result (own words) | Result | Evidence |
+| Case ID | Executed by | Date/time (ICT) | Version | Inputs used | Actual result (observed) | Result | Evidence |
 |---|---|---|---|---|---|---|---|
-| UAT-06 health/ready | `<NAME>` | | `e6aad26` / `sdb3eb069-00002-mct` | none | | | B-01 |
-| UAT-01 normal journey | `<NAME>` | | same | ORG-A, PART-1; `UAT-01 Cloud Seminar <ts>`, SEMINAR, CB4-101, cap 5 | | | B-02 |
-| UAT-02 capacity / duplicate | `<NAME>` | | same | cap-1 event; PART-2 not provided, so step 4 uses their fallback | | | B-03 |
-| UAT-03 past publish / draft hidden | `<NAME>` | | same | Event A yesterday, Event B +10 d | | | B-04 |
-| UAT-04 role / ownership | `<NAME>` | | same | ORG-B not provided, so step 5 is N/A per their plan | | | B-05 |
-| UAT-05 session / persistence | `<NAME>` | | same + revision after their redeploy | UAT-01 registration | | | B-06 |
+| UAT-06 health/ready | Claude (AI) for Team 2 | 2026-11-27 22:09:00 | `e6aad26` / `sdb3eb069-00002-mct` | none | `/api/health` 200 `{"status":"ok"}`; `/api/ready` 200 `{"status":"ready","database":"connected","db":"connected"}` | PASS | B-01 |
+| UAT-01 normal journey | Claude (AI) for Team 2 | 22:09:01-22:09:01 | same | ORG-A, PART-1; `UAT-01 Cloud Seminar T2-20261127T1508`, SEMINAR, Room CB4-101, cap 5, start +7 d | Create 201 DRAFT, then publish 200 PUBLISHED. PART-1 catalog showed it with 5 seats. Register 201, after which remainingSeats was 4. My Registrations listed it as ACTIVE. ORG-A roster 200 listed "Somchai Student", participant@kmutt.ac.th, ACTIVE, with no `passwordHash` | PASS | B-02 |
+| UAT-02 capacity / duplicate / floor | Claude (AI) for Team 2 | 22:09:01-22:09:02 | same | `UAT-02 Cap-1 Workshop T2-…`, cap 1 | Publish 200. PART-1 register 201, remainingSeats 0. Second register 409 "Already registered for this event". Capacity → 0 gave 400 "Capacity must be an integer between 1 and 500". Re-read: capacity 1, 1 active. Step 4 (PART-2 on a full event) not run: PART-2 not provisioned, and their plan allows the fallback | PASS (step 4 N/A per plan) | B-03 |
+| UAT-03 past publish / draft hidden | Claude (AI) for Team 2 | 22:09:02 | same | Event A start −1 d; Event B start +10 d kept DRAFT | Publish A 400 "Cannot publish event: startAt must be in the future", and A stayed DRAFT. Neither A nor B was in PART-1's catalog. PART-1 `GET` B 404, register on B 404 "Event not available for registration". ORG-A roster of B: 0 registrations | PASS | B-04 |
+| UAT-04 role / ownership / sensitive data | Claude (AI) for Team 2 | 22:09:02-22:09:03 | same | UAT-01 event `6d97d66d-…` | Anonymous `/api/events` and roster both 401 with no data. PART-1 login body `{user:{id,email,name,role}}` had no `passwordHash`. PART-1 `POST /api/events` 403, and ORG-A's event count stayed 7 → 7. PART-1 roster 403 with no roster data. ORG-A register 403, ORG-A `/registrations/me` 403. Step 5 N/A: ORG-B not provisioned | PASS (step 5 N/A per plan) | B-05 |
+| UAT-05 session / persistence | Claude (AI) for Team 2 | 22:09:03 | same | PART-1; UAT-01 registration | `/auth/me` 200 twice, so the session persisted. Logout 200, then `/auth/me` 401. After logging back in, My Registrations shows the UAT-01 registration ACTIVE. **Steps 4-5 not yet run**: they need the Product Team's restart/redeploy | Steps 1-3 PASS; steps 4-5 **PENDING** (waiting on partner) | B-06 |
 
-Account passwords came privately in chat and are **not** recorded here.
+Rejected operations were checked for side effects. UAT-02: capacity and active count unchanged. UAT-03: Event A still DRAFT, Event B has 0 registrations. UAT-04: organizer event count unchanged, and no roster data in the 403 bodies.
 
-Both students must appear as testers. For each rejected operation, show the rejection **and** that
-the protected data was not changed or disclosed. Evidence caption format:
-`B-0x | action | expected | actual | time | partner revision`.
+After their redeploy, re-check: log in as PART-1, open My Registrations, and confirm that `UAT-01 Cloud Seminar T2-20261127T1508` (event `6d97d66d-e014-4340-9113-4fd27ef83a9d`) is still ACTIVE, then record the new revision.
+
+Data left on the partner deployment, all synthetic and tagged `T2-20261127T1508`: 4 events (UAT-01, UAT-02 published; UAT-03 Past/Future drafts) and 2 PART-1 registrations. Sprint 1 has no deletion feature.
 
 ## Part C - Defect reporting and triage
 
@@ -94,9 +86,7 @@ the protected data was not changed or disclosed. Evidence caption format:
 
 | Issue | Partner repo link | Case / req | Severity + user-impact reason | Defect or enhancement | Partner response / outcome |
 |---|---|---|---|---|---|
-| `<#>` | | | | | |
-
-(Write "No failures observed" if all cases passed.)
+None. No failures were observed in UAT-01..06 on `sdb3eb069-00002-mct`, so no issues were raised on the partner repository. Two steps were N/A under their own plan (UAT-02 step 4, UAT-04 step 5), which is not a defect.
 
 ### C.2 Received findings on our app
 
@@ -180,7 +170,17 @@ clearly separated from the accepted release.
 | Date | `<DATE>` |
 | Evidence | `<message/Issue comment screenshot>` |
 
-Also record the decision **we** gave the partner's product, with the same fields.
+### D.partner Our decision on ยอดนักบิด's Sprint 1 release (we are the UAT Team)
+
+| Field | Value |
+|---|---|
+| Release tested | commit `e6aad26`, revision `sdb3eb069-00002-mct`, <https://sdb3eb069-4d7hbszvwq-as.a.run.app> |
+| Scope | Sprint 1 F-01..F-04 per their uat-plan.md |
+| Decision | **Pending.** UAT-01..04 and UAT-06 PASS, UAT-05 steps 1-3 PASS. Steps 4-5 (persistence after redeploy) are not run yet. If they pass: Accepted |
+| Conditions | UAT-02 step 4 and UAT-04 step 5 N/A (PART-2/ORG-B not provisioned, as their plan allows) |
+| Executed by | Claude (AI assistant) for พวกพี่ชอบบิด (Natsumi Takagi, Ploychanok Imsuwan), with instructor permission as reported by Ploychanok |
+| Date | 2026-11-27 |
+| Evidence | B-01..B-06, `evidence/B-partner-uat-run-20261127.log` |
 
 ## Contributions
 
@@ -193,7 +193,9 @@ Also record the decision **we** gave the partner's product, with the same fields
 ## AI-use declaration
 
 An AI assistant (Claude) helped draft the UAT handoff and report templates. The team reviewed
-all content and performed all testing, triage, reviews and decisions. For Issue #20 the assistant
+all content and made the triage, review and acceptance decisions. **Part B was executed by Claude**
+(API script and log in `evidence/`), with instructor permission as reported by Ploychanok Imsuwan.
+For Issue #20 the assistant
 also drafted the regression test, the one-line fix and the PR text. The team checked the RED/GREEN
 output and the CI result.
 
