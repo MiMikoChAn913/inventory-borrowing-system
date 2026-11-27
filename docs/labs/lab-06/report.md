@@ -163,7 +163,7 @@ clearly separated from the accepted release.
    ```
    Same command at `f854ea5`: all 10 unit tests ✔, including the six existing AC tests. `ℹ tests 10  ℹ pass 10  ℹ fail 0  ℹ skipped 0`. `npm run build` passes.
 4. **Review/CI:** PR #21 `fix/20-return-ownership-before-state` → `staging` (<https://github.com/MiMikoChAn913/inventory-borrowing-system/pull/21>). CI `test-and-docker` run 46016149386 **passed**: unit 10/10, integration 6/6 against PostgreSQL 16, Docker build OK.
-   Still to do: teammate review text (Natsumi) `<PENDING>` → merge → release PR `<#>` `staging` → `main` → deploy run `<link>`.
+   Natsumi approved PR #21 after re-running RED/GREEN locally. Merged into `staging` as `de4ff93`. Release PR #22 `staging` → `main`: CI run 46021446652 passed. Still to do: teammate review of #22 `<PENDING>`, merge, deploy run `<link>`.
 5. **Deployed fix:** revision `<PENDING>`, `deploy/smoke_test.py` output `<PENDING>`. Tell ยอดนักบิด **before** merging to `main`.
 6. **Partner retest:** tester `<NAME>`, revision `<REV>`, date, actual result, evidence ID `<PENDING>`.
    Ask the partner to re-run: UAT-06 step 3, plus calling return as ACC-B2 on a RETURNED ACC-B1 request (expect 403), UAT-04 step 2 (owner gets 409), UAT-04 step 4 (persistence on the new revision) and UAT-01 (regression).
